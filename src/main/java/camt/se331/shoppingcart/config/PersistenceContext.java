@@ -39,8 +39,21 @@ import java.util.Properties;
 @PropertySources(value = {@PropertySource("classpath:/hibernate.properties")})
 class PersistenceContext {
 
+    private static final String[] ENTITY_PACKAGES = {
+            "camt.se331.shoppingcart.entity"
+    };
+
+    private static final String PROPERTY_NAME_HIBERNATE_DIALECT = "hibernate.dialect";
+    private static final String PROPERTY_NAME_HIBERNATE_FORMAT_SQL = "hibernate.format_sql";
+    private static final String PROPERTY_NAME_HIBERNATE_HBM2DDL_AUTO = "hibernate.hbm2ddl.auto";
+    private static final String PROPERTY_NAME_HIBERNATE_SHOW_SQL = "hibernate.show_sql";
+    private static final String PROPERTY_NAME_DB_DRIVER_CLASS = "db.driver";
+    private static final String PROPERTY_NAME_DB_PASSWORD = "db.password";
+    private static final String PROPERTY_NAME_DB_URL = "db.url";
+    private static final String PROPERTY_NAME_DB_USER = "db.username";
+
     @Bean
-    public HibernateExceptionTranslator hibernateExceptionTranslator(){
+    public HibernateExceptionTranslator hibernateExceptionTranslator() {
         return new HibernateExceptionTranslator();
     }
 
@@ -66,50 +79,42 @@ class PersistenceContext {
 
     @Bean
     @Autowired
-    public  EntityManagerFactory entityManagerFactory (DataSource dataSource){
+    public EntityManagerFactory entityManagerFactory(DataSource dataSource) {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setGenerateDdl(true);
         vendorAdapter.setShowSql(false);
 
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
+        factory.setPackagesToScan(ENTITY_PACKAGES);
         factory.setDataSource(dataSource);
-
         Properties jpaProperties = new Properties();
         jpaProperties.put(PROPERTY_NAME_HIBERNATE_DIALECT, env.getRequiredProperty(PROPERTY_NAME_HIBERNATE_DIALECT));
-        jpaProperties.put(PROPERTY_NAME_HIBERNATE_HBM2DDL_AUTO, env.getRequiredProperty(PROPERTY_NAME_HIBERNATE_HBM2DDL_AUTO));
-        jpaProperties.put(PROPERTY_NAME_HIBERNATE_SHOW_SQL, env.getRequiredProperty(PROPERTY_NAME_HIBERNATE_SHOW_SQL));
-        jpaProperties.put(PROPERTY_NAME_HIBERNATE_FORMAT_SQL, env.getRequiredProperty(PROPERTY_NAME_HIBERNATE_FORMAT_SQL));
 
+        jpaProperties.put(PROPERTY_NAME_HIBERNATE_HBM2DDL_AUTO, env.getRequiredProperty(PROPERTY_NAME_HIBERNATE_HBM2DDL_AUTO));
+
+        //If the value of this property is true, Hibernate writes all SQL
+        //statements to the console.
+        jpaProperties.put(PROPERTY_NAME_HIBERNATE_SHOW_SQL, env.getRequiredProperty(PROPERTY_NAME_HIBERNATE_SHOW_SQL));
+
+        //If the value of this property is true, Hibernate will use prettyprint
+        //when it writes SQL to the console.
+        jpaProperties.put(PROPERTY_NAME_HIBERNATE_FORMAT_SQL, env.getRequiredProperty(PROPERTY_NAME_HIBERNATE_FORMAT_SQL));
         factory.setJpaProperties(jpaProperties);
-        factory.afterPropertiesSet();
+
+        factory.afterPropertiesSet();;
         return factory.getObject();
     }
 
+
     @Bean
     @Autowired
-    public JpaTransactionManager transactionManager (EntityManagerFactory entityManagerFactory){
+    public JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
         JpaTransactionManager txManager = new JpaTransactionManager();
         JpaDialect jpaDialect = new HibernateJpaDialect();
         txManager.setEntityManagerFactory(entityManagerFactory);
         txManager.setJpaDialect(jpaDialect);
         return txManager;
     }
-
-
-    private static final String[] ENTITY_PACKAGES = {
-            "camt.se331.shoppingcart.entity"
-    };
-
-    private static final String PROPERTY_NAME_HIBERNATE_DIALECT = "hibernate.dialect";
-    private static final String PROPERTY_NAME_HIBERNATE_FORMAT_SQL = "hibernate.format_sql";
-    private static final String PROPERTY_NAME_HIBERNATE_HBM2DDL_AUTO = "hibernate.hbm2ddl.auto";
-    private static final String PROPERTY_NAME_HIBERNATE_SHOW_SQL = "hibernate.show_sql";
-    private static final String PROPERTY_NAME_DB_DRIVER_CLASS = "db.driver";
-    private static final String PROPERTY_NAME_DB_PASSWORD = "db.password";
-    private static final String PROPERTY_NAME_DB_URL = "db.url";
-    private static final String PROPERTY_NAME_DB_USER = "db.username";
-
-
 
 }
