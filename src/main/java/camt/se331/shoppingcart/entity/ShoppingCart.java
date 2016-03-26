@@ -6,7 +6,17 @@ import java.util.List;
 /**
  * Created by Dto on 2/7/2015.
  */
+@Entity
 public class ShoppingCart {
+    @Id
+    @GenerateValue
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @Cascade(CascadeType.ALL)
+    List<SelectedProduct> selectedProducts;
+    @Temporal(TemporalType.TIMESTAMP)
+    Date purchaseDate;
+
     List<SelectedProduct> selectedProducts;
     Date purchaseDate;
     public double getTotalProductPrice(){
