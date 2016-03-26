@@ -9,6 +9,8 @@ import javax.persistence.Id;
  */
 
 public class Product implements Comparable{
+    @Id
+    @GeneratedValue
 
     Long id;
     String name;
