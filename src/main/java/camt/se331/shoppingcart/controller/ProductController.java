@@ -11,6 +11,7 @@ import java.util.List;
 /**
  * Created by Dto on 2/8/2015.
  */
+
 @RestController
 @RequestMapping("/")
 public class ProductController {
@@ -40,5 +41,10 @@ public class ProductController {
     @RequestMapping(value = "product/{id}",method = RequestMethod.DELETE)
     public  Product edit(@PathVariable("id") Long id){
         return productService.deleteProduct(id);
+    }
+
+    @RequestMapping(value = "getProduct", method = RequestMethod.GET)
+    public List <Product> getListByName (@RequestParam ("name") String name){
+        return productService.getProductsByName(name);
     }
 }
