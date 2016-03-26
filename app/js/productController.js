@@ -20,16 +20,13 @@ productMainController.controller('addProductController', ['$scope', '$http', '$l
 
     }]);
 
-productMainController.controller('listProductController', ['$scope', '$http', '$rootScope','productService','$route','totalCalService','queryProductService'
-    function ($scope, $http, $rootScope,productService,$route,totalCalService, queryProductService) {
+productMainController.controller('listProductController', ['$scope', '$http', '$rootScope','productService','$route','totalCalService',
+    function ($scope, $http, $rootScope,productService,$route,totalCalService) {
         //$http.get("/product/").success(function (data) {
         var data = productService.query(function(){
             $scope.totalNetPrice= totalCalService.getTotalNetPrice(data);
             $scope.products = data;
-        }
-
-
-        );
+        });
 
 
         $scope.$on('$locationChangeStart', function (event) {
