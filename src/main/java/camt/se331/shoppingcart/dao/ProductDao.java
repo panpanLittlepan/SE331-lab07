@@ -2,7 +2,6 @@ package camt.se331.shoppingcart.dao;
 
 import camt.se331.shoppingcart.entity.Product;
 
-import javax.persistence.spi.ProviderUtil;
 import java.util.List;
 
 /**
@@ -17,5 +16,4 @@ public interface ProductDao {
     Product deleteProduct(Product product);
     Product updateProduct(Product product);
     List<Product> getProductsByName(String name);
-
 }
